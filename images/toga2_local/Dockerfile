@@ -7,7 +7,7 @@ FROM continuumio/anaconda3
 ARG MODULE_VERSION
 LABEL Author="SGN Hillerlab" module.version="${MODULE_VERSION}"
 RUN echo "Building version ${MODULE_VERSION}"
-COPY images/toga2/VERSION /tmp/toga2.VERSION
+COPY images/toga2_local/VERSION /tmp/toga2.VERSION
 
 SHELL ["/bin/bash", "-c"]
 
