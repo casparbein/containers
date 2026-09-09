@@ -65,21 +65,23 @@ RUN python3 -m venv toga2 && \
 ENV VIRTUAL_ENV=/opt/TOGA2/toga2
 ENV PATH="/opt/TOGA2/toga2/bin:${PATH}"
 
-# dummy user for Slurm, as in the original %runscript
-RUN adduser --disabled-password --gecos "" slurm
-
 RUN cat <<'EOF' > /usr/local/bin/toga2-entrypoint.sh
 #!/bin/bash
 set -e
-echo "slurmadmin:x:300:300::/opt/slurm/slurm:/bin/false" >> /etc/passwd
-echo "slurmadmin:x:300:" >> /etc/group
+
+if [ -n "${EXEC_DIR:-}" ]; then
+    export PATH="${EXEC_DIR}:${PATH}"
+fi
+if [ -n "${LIB_DIR:-}" ]; then
+    export LD_LIBRARY_PATH="${LIB_DIR}:${LD_LIBRARY_PATH:-}"
+fi
+if [ -n "${SLURM_CONF:-}" ]; then
+    export SLURM_CONF="${SLURM_CONF}"
+fi
+
+export NXF_HOME="${TMPDIR:-/tmp}/.nextflow"
 
 cd /opt/TOGA2
-export SLURM_CONF="${SLURM_CONF}"
-export NXF_HOME="${TMPDIR}/.nextflow"
-export EXEC_DIR="${EXEC_DIR}"
-export PATH="${EXEC_DIR}:/opt/TOGA2/toga2/bin:/root/.cargo/bin:/opt/nextflow:/opt/conda/bin:/opt/TOGA2:/opt/TOGA2/bin:/opt/TOGA2/bin/prank:/opt/TOGA2/bin/iqtree2:/opt/TOGA2/bin/intronIC:${PATH}"
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LIB_DIR}"
 
 exec "$@"
 EOF
