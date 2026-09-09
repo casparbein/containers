@@ -48,7 +48,7 @@ RUN TOGA2_VERSION="$(tr -d '[:space:]' < /tmp/toga2.VERSION)" && \
     case "${TOGA2_VERSION}" in ""|*[!0-9.a-zA-Z]*) echo "Invalid TOGA2 version: ${TOGA2_VERSION}" >&2; exit 1 ;; esac && \
     git clone --recurse-submodules --depth 1 --branch "v${TOGA2_VERSION}" \
         https://github.com/hillerlab/TOGA2 /opt/TOGA2
-COPY images/toga2/VERSION /opt/TOGA2/VERSION
+COPY images/toga2_local/VERSION /opt/TOGA2/VERSION
 WORKDIR /opt/TOGA2
 RUN python3 -m venv toga2 && \
     . toga2/bin/activate && \
